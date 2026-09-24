@@ -23,7 +23,7 @@ const CREATE_TABLES = [
     name VARCHAR(100) NOT NULL,
     description VARCHAR(500) NOT NULL,
     price INT NOT NULL,
-    image VARCHAR(255) NULL,
+    
     category VARCHAR(40) NOT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   ) ${TABLE_OPTIONS}`,
@@ -61,7 +61,7 @@ function toProduct(row) {
     name: row.name,
     description: row.description,
     price: Number(row.price),
-    image: row.image,
+  
     category: row.category,
   };
 }
@@ -149,17 +149,17 @@ export function createDb() {
       if (!products || products.length === 0) return;
 
       const rows = products.map((p) => [
-        p.id, p.position, p.name, p.description, p.price, p.image ?? null, p.category,
+        p.id, p.position, p.name, p.description, p.price ?? null, p.category,
       ]);
       await db.query(
-        `INSERT INTO products (id, position, name, description, price, image, category)
+        `INSERT INTO products (id, position, name, description, price, category)
          VALUES ? AS new
          ON DUPLICATE KEY UPDATE
            position = new.position,
            name = new.name,
            description = new.description,
            price = new.price,
-           image = new.image,
+          
            category = new.category,
            updated_at = CURRENT_TIMESTAMP`,
         [rows]
